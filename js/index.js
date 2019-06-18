@@ -48,14 +48,22 @@ nav.addEventListener('click', event => {
     event.preventDefault();
 })
 
-const welcome = document.querySelector('.intro');
-// console.log(welcome.textContent);
-window.addEventListener('select', event => {
-    // event.target.style.background ='red';
-    console.log("we made it");
-    // console.log(event.target.textContent.substring(event.target.selectionStart, event.target.selectionEnd))
-    // event.target.textContent.substring(event.target.selectionStart, event.target.selectionEnd).style.color = 'red'
+const welcome = document.querySelector('.intro p');
+
+welcome.addEventListener('wheel', event => {
+    event.preventDefault();
+    let scale = 1;
+    scale += event.deltaY * -0.01;
+    scale = Math.min(Math.max(.125, scale), 4);
+    event.target.style.transform = `scale(${scale})`;
 })
+// console.log(welcome.textContent);
+// welcome.addEventListener('select', event => {
+//     event.target.style.background ='red';
+//     console.log("we made it");
+//     console.log(event.target.textContent.substring(event.target.selectionStart, event.target.selectionEnd))
+//     event.target.textContent.substring(event.target.selectionStart, event.target.selectionEnd).style.color = 'red'
+// })
 
 
 function doSwap(a, b) {

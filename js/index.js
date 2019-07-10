@@ -1,130 +1,122 @@
-// Your code goes here
+// Mouseover nav anchors
+const nav = document.querySelector('.nav');
+nav.addEventListener('mouseover', event => event.target.style.color = 'blue');
+nav.addEventListener('mouseout', event => event.target.style.color = 'black');
 
-
-// #### Window ####
-
-
-//Scroll
-const home = document.querySelector('.home');
-window.addEventListener('scroll', event => {
-    home.style.background = 'antiquewhite';
-})
-
-// Resize
-window.addEventListener('resize', event =>{
-    if(window.innerWidth <= 550) {
-        home.style.background = 'lightblue';
+// Keydown background change on "Enter" key press
+container = document.querySelector('.container')
+window.addEventListener('keydown', event =>{
+    if (event.keyCode === 13) {
+    
+        document.body.style.background = 'lightblue';   
     }
-    else if (window.innerWidth > 550) {
-        home.style.background = '';
-    }
+    window.addEventListener('keyup', () => document.body.style.background = '');  
 })
 
-// Keydown
-window.addEventListener('keydown', event => {
-    event.target.style.color = 'pink';
+// Wheel switches 'fun bus' color
+const funBus = document.querySelector('.logo-heading');
+document.addEventListener('wheel', event => {
+    if (event.deltaY > 0) {
+        funBus.style.color = 'violet';
+    } else if (event.deltaY < 0) {
+        funBus.style.color = 'red';
+    }  
 })
 
-window.addEventListener('keyup', event => {
-    event.target.style.color = 'black';
-})
-
-// Load
-window.addEventListener('load', (event) => {
-    // alert('Page Loaded');
+// Drag & Drop bus image to change text below it
+const busImg = document.querySelector('.intro > img')
+busImg.addEventListener('dragstart', event => {
+    const welcome = document.querySelector('.intro > h2')
+    welcome.textContent = `OH GOD PLEASE HELP!`
+    event.target.addEventListener('dragend', () => welcome.textContent = `Thanks for dropping me`)
 });
 
-
-
-// #### Double click scroll to top on fun bus ####
-const funBus = document.querySelector('.logo-heading');
-funBus.addEventListener('dblclick', event => {
-    window.scroll(0, 0);
-})
-
-//#### Nav Anchor Color change ####
-const nav = document.querySelector('nav');
-console.log(nav);
-
-nav.addEventListener('mouseover', event => {
-    event.target.style.color = 'blue';
-})
-
-nav.addEventListener('mouseout', event => {
-    event.target.style.color = 'black';
-})
-
-// prevent click on anchors
-nav.addEventListener('click', event => {
-    event.preventDefault();
-})
-
-
-// Wheel
-const welcome = document.querySelector('.intro p');
-welcome.addEventListener('wheel', event => {
-    event.preventDefault();
-    let scale = 1;
-    scale += event.deltaY * -0.01;
-    scale = Math.min(Math.max(.125, scale), 4);
-    event.target.style.transform = `scale(${scale})`;
-})
-welcome.addEventListener('click', event => {
-    let scale = 1;
-    event.target.style.transform = `scale(${scale})`;
-})
-console.log(welcome.textContent);
-welcome.addEventListener('select', event => {
-    event.target.style.background ='red';
-})
+// Load text in header 
+window.addEventListener('load', () => funBus.textContent = `${funBus.textContent}... Has Loaded`)
 
 // Focus
-const firstAnchor = document.querySelector('.nav a')
-console.log(firstAnchor);
-firstAnchor.addEventListener('focus', event => {
-    event.target.style.fontSize = '5rem';
-})
-firstAnchor.addEventListener('blur', event => {
-    event.target.style.fontSize = '';
-})
+navAnchors = Array.from(document.querySelectorAll('.nav > a'));
+navAnchors.forEach(el => el.addEventListener('focus', event => {
+    let savedTag = event.target.textContent;
+    event.target.textContent = `CLICKED`;
+    event.target.addEventListener('blur', () => event.target.textContent = savedTag);
 
-// Drag/Drop
-const busImg = document.querySelector('.intro img');
-busImg.addEventListener('dragstart', event => {
-    welcome.style.color = 'green';
-    console.log('dragged');  
-    
+}))
+
+// Resize window to mobile background change
+
+window.addEventListener('resize', event =>{
+    if (window.innerWidth <= 500) {
+        document.body.style.background = 'antiquewhite';
+    } else if (window.innerWidth <= 800) {
+        document.body.style.background = 'powderblue';
+    } else {
+        document.body.style.background = '';
+    }
+        
 });
-busImg.addEventListener('dragend', event => {
-    console.log('dropped');
-    welcome.style.color = 'red';   
+
+// scroll changes header text with a timeout
+window.addEventListener('scroll', event =>{
+    funBus.textContent = `Fun Bus is scrolling`
+    setInterval(function() {
+        funBus.textContent = `Fun Bus stopped scrolling`
+    }, 300)
 });
 
 // Select
-const inputBar = document.createElement('input')
-inputBar.value = `Select me!`;
-home.appendChild(inputBar)
-console.log(inputBar);
-inputBar.addEventListener('select', event => {
-    alert('selected this');
-})
+const textArea = document.createElement('textarea');
+textArea.value = 'SELECT THIS!';
+container.append(textArea);
+textArea.addEventListener('select', event => {
+    alert(`You selected ${event.target.value.substring(event.target.selectionStart, event.target.selectionEnd)}`)
+});
+
+// Double click images
+const images = Array.from(document.querySelectorAll('img'));
+images.forEach(el => el.addEventListener('dblclick', event => {
+    alert(event.target.alt);
+}));
+
+// Prevent default on nav anchors
+navAnchors.forEach(el => el.addEventListener('click', event => event.preventDefault()));
+
 
 // Propagation chain
+const intro = document.querySelector('.intro');
+const funBusParagraph = document.querySelector('.intro > p');
 
-const contentDestination = document.querySelector('.content-pick');
-const destination = document.querySelector('.destination');
-const btn = document.querySelector('.btn');
-console.log(contentDestination);
+intro.addEventListener('click', event => {
+    alert(`clicked parent div`);
+})
+funBusParagraph.addEventListener('click', event => {
+    event.stopPropagation();
+    alert(`clicked child div`);
+})
 
-contentDestination.addEventListener('click', event => {
-    event.stopPropagation();
-    alert(`clicked top div`);
+
+// Animation on buttons
+let currentAnimation = new TimelineLite();
+const btn = document.querySelectorAll('.btn');
+btn.forEach(el =>  {
+    let tl = new TimelineLite({paused:true});
+    tl.to(el, 0.5, {
+         height: "150px"
+       })
+    el.animation = tl;
+
+    el.addEventListener("click", (event) => {
+        if(el.animation == currentAnimation){
+            if(!el.animation.reversed()){
+                el.animation.reverse();     
+            } else {
+                el.animation.play()
+            }
+        } else {
+          currentAnimation.reverse();
+          el.animation.play();
+          currentAnimation = el.animation;
+        }
+
+    })
 })
-destination.addEventListener('click', event => {
-    event.stopPropagation();
-    alert(`clicked middle div`);
-})
-btn.addEventListener('click', event => {
-    event.stopPropagation();
-    alert(`clicked bottom div`);
-});

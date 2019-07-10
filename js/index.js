@@ -56,7 +56,7 @@ window.addEventListener('resize', event =>{
         
 });
 
-// scroll
+// scroll changes header text with a timeout
 window.addEventListener('scroll', event =>{
     funBus.textContent = `Fun Bus is scrolling`
     setInterval(function() {
@@ -65,3 +65,58 @@ window.addEventListener('scroll', event =>{
 });
 
 // Select
+const textArea = document.createElement('textarea');
+textArea.value = 'SELECT THIS!';
+container.append(textArea);
+textArea.addEventListener('select', event => {
+    alert(`You selected ${event.target.value.substring(event.target.selectionStart, event.target.selectionEnd)}`)
+});
+
+// Double click images
+const images = Array.from(document.querySelectorAll('img'));
+images.forEach(el => el.addEventListener('dblclick', event => {
+    alert(event.target.alt);
+}));
+
+// Prevent default on nav anchors
+navAnchors.forEach(el => el.addEventListener('click', event => event.preventDefault()));
+
+
+// Propagation chain
+const intro = document.querySelector('.intro');
+const funBusParagraph = document.querySelector('.intro > p');
+
+intro.addEventListener('click', event => {
+    alert(`clicked parent div`);
+})
+funBusParagraph.addEventListener('click', event => {
+    event.stopPropagation();
+    alert(`clicked child div`);
+})
+
+
+// Animation on buttons
+let currentAnimation = new TimelineLite();
+const btn = document.querySelectorAll('.btn');
+btn.forEach(el =>  {
+    let tl = new TimelineLite({paused:true});
+    tl.to(el, 0.5, {
+         height: "150px"
+       })
+    el.animation = tl;
+
+    el.addEventListener("click", (event) => {
+        if(el.animation == currentAnimation){
+            if(!el.animation.reversed()){
+                el.animation.reverse();     
+            } else {
+                el.animation.play()
+            }
+        } else {
+          currentAnimation.reverse();
+          el.animation.play();
+          currentAnimation = el.animation;
+        }
+
+    })
+})
